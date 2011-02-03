@@ -1,0 +1,12 @@
+<% if @user.errors.any? %>
+	<div id="error_explanation">
+		<p>
+			<%=pluralize(@user.errors.count,"error") %> prevented this form from being saved</p>
+		</p>
+		<ul>
+		<% @user.errors.full_messages.each do |e| %>
+			<li><%= e %></li>
+		<%end%>	
+		</ul>
+	</div>
+<%end%>

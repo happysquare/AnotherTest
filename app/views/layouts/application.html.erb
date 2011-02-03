@@ -13,8 +13,15 @@
 		<div class="container">
 			
 			<%= render 'layouts/header' %>
-				
+			<% if flash.any? %>
+				<section class="round">
+					<% flash.each do |k,v|%>
+						<div class ="flash <%= k%>"><%=v%></div>
+					<%end%>
+				</section>
+			<%end%>
 			<section class="round">
+				
 				<%= yield %>
 			</section>
 			

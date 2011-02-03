@@ -42,5 +42,31 @@ describe UsersController do
       response.should have_selector("h1>img", :class => 'gravatar') 
     end
   end
+  describe "POST 'new'" do
+    describe "failure" do
+      before(:each) do
+        @att = {:name => "",
+                :email => "",
+                :password => "",
+                :password_confirmation => ""}
+      end
+      
+      it "should fail to create a user without the correct parameters" do
+        lambda do
+          post :create, :user => @att
+        end.should_not change(User, :count)
+      end
+      it "should stay on the new page when there is a failed submission" do
+        post :create ,:user => @att
+        response.should have_selector("title", :content => "Sign Up")
+      end
+    
+      it "should render the correct template" do
+        post :create, :user => @att
+        response.should render_template('new')
+      end
+    end
+  end
+  
 end
  

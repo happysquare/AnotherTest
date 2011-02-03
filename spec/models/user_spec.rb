@@ -63,38 +63,40 @@ describe User do
    u.should_not be_valid
  end
  
- describe "password encryption" do
-   
-   before(:each) do
-     @user = User.create(@user_att)
-   end
-   
-   it "should respond to encrypted_password" do
-    @user.should respond_to (:encrypted_password)
-   end
-   
-   it "should set the encrypted password" do 
-     @user.encrypted_password.should_not be_blank
-   end
-   
-   it "should have the password " do
-     @user.has_password?(@user_att[:password]).should be_true
-   end
-   
-   it "should not have the wrong password " do
+  describe "password encryption" do
+
+    before(:each) do
+      @user = User.create(@user_att)
+    end
+
+    it "should respond to encrypted_password" do
+      @user.should respond_to (:encrypted_password)
+    end
+
+    it "should set the encrypted password" do 
+      @user.encrypted_password.should_not be_blank
+    end
+
+    it "should have the password " do
+      @user.has_password?(@user_att[:password]).should be_true
+    end
+
+    it "should not have the wrong password " do
       @user.has_password?("not_my_password").should be_false
     end  
-   
-   it "should authenticate the user" do
-     User.authenticate?( @user_att[:email], @user_att[:password]).should be_true
-   end
-   it "should not authenticate false password" do
+
+    it "should authenticate the user" do
+      User.authenticate?( @user_att[:email], @user_att[:password]).should be_true
+    end
+    it "should not authenticate false password" do
       User.authenticate?( @user_att[:email], "notpassword").should be_false
     end
-     it "should not authenticate non existent email" do
-        User.authenticate?( "not.any@user.com", @user_att[:password]).should be_false
-      end
- end
+    it "should not authenticate non existent email" do
+      User.authenticate?( "not.any@user.com", @user_att[:password]).should be_false
+    end
+
+  end
+  
  
 
 end
