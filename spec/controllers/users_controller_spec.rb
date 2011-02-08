@@ -17,7 +17,7 @@ describe UsersController do
   end
   describe "GET 'show'" do
     before(:each) do
-      @user = Factory(:user) 
+      @user = Factory(:user)  
     end
     it "should be successful" do
       get :show, :id => @user
@@ -30,7 +30,7 @@ describe UsersController do
     it "should have the correct user" do
       get 'show', :id => @user
       assigns(:user).should == @user
-    end
+    end 
     
     it "should have the correct users name" do
       get :show, :id => @user

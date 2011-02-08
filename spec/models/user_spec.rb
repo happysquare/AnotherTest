@@ -3,10 +3,10 @@ require 'spec_helper'
 describe User do
  before(:each) do
    @user_att = {
-                :name => "James", 
+                :name => 'james johnston', 
                 :email=> "james@happysquare.com.au",
-                :password=> "password",
-                :password_confirmation => "password"
+                :password=> "soph22",
+                :password_confirmation => "soph22"
                 }
  end
  it "should create a new user" do
@@ -61,7 +61,7 @@ describe User do
  it "should reject short passwords" do
    u = User.create(@user_att.merge(:password => "a",:password_confirmation => "a"))
    u.should_not be_valid
- end
+ end 
  
   describe "password encryption" do
 
@@ -86,13 +86,13 @@ describe User do
     end  
 
     it "should authenticate the user" do
-      User.authenticate?( @user_att[:email], @user_att[:password]).should be_true
+      User.authenticate( @user_att[:email], @user_att[:password]).should be_true
     end
     it "should not authenticate false password" do
-      User.authenticate?( @user_att[:email], "notpassword").should be_false
+      User.authenticate( @user_att[:email], "notpassword").should be_false
     end
     it "should not authenticate non existent email" do
-      User.authenticate?( "not.any@user.com", @user_att[:password]).should be_false
+      User.authenticate( "not.any@user.com", @user_att[:password]).should be_false
     end
 
   end

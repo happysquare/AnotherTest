@@ -30,27 +30,43 @@ class User < ActiveRecord::Base
   before_save :encrypt_password
   
   #class/static method to authenticate any user.
-  def self.authenticate?(email,password)
+  def self.authenticate(email,sp)
     u = find_by_email(email)
-    return true if u && u.has_password?(password)
+    return nil if u.nil?
+    return u if u.has_password?(sp)
   end
     
+  def self.authenticate_and_retrieve(email,p)
+     u = find_by_email(email)
+     return u  if u && u.has_password?(p)
+  end 
   
-  def has_password?(pass)
-    encrypt(pass) == self.encrypted_password
+  def self.authenticate_with_salt(id,cookie_salt)
+    user = find_by_id(id)
+    (user && user.salt == cookie_salt) ? user : nil
   end
   
-  private
+  def has_password?(pass)
+    encrypted_password == encrypt(pass)
+  end
+  
+  
   
   def encrypt_password
-        self.encrypted_password = encrypt(password)
+      self.salt = make_salt if new_record?
+      self.encrypted_password = encrypt(password)
   end
   
   def encrypt(string)
     #create an encrypted string
-    Digest::SHA2.hexdigest(string)
+   secure_hash("#{salt}--#{string}")
   end
 
-  
+  def make_salt
+    secure_hash("#{Time.now.utc}--#{password}")
+  end
+  def secure_hash(string)
+     Digest::SHA2.hexdigest(string)
+  end
   
 end

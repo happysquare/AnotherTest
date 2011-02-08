@@ -32,6 +32,12 @@ Spork.prefork do
     config.use_transactional_fixtures = true
     
     ActiveSupport::Dependencies.clear
+    
+    #function to test the sign in process
+    def test_sign_in(user)
+      controller.sign_in(user)
+    end
+    
   end
 end
 
