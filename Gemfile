@@ -26,7 +26,8 @@ group :development do
 	gem 'rspec-rails','2.0.1'
 	gem 'annotate-models' ,'1.0.4'
 end
-
+gem 'gravatar_image_tag'
+gem 'will_paginate', '3.0.pre2'
 # Bundle gems for the local environment. Make sure to
 # put test-only gems in this group so their generators
 # and rake tasks are available in development mode:
@@ -35,7 +36,8 @@ end
    gem 'webrat', '0.7.1'
    gem 'spork', '0.8.4'
    gem 'factory_girl_rails','1.0'
-   gem 'gravatar_image_tag'
+   
+   gem 'faker', '0.3.1'
 
 end
 
