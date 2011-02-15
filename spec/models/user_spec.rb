@@ -112,5 +112,41 @@ describe User do
      @user.should be_admin
    end
  end
+   describe "associations" do
+     describe "microposts" do
+       before(:each) do
+         @user = User.create(@user_att)
+         @micropost = @user.microposts.create({:content => "test micropost"})
+       end
+       it "should be respond to microposts" do
+         @user.should respond_to(:microposts)
+       end
+       
+     end
+   end
    
+   describe "micropost associations" do
+     before(:each) do
+       @user = User.create(@user_att)
+       @mp1 = Factory(:micropost, :user => @user, :created_at => 1.day.ago)
+       @mp2 = Factory(:micropost, :user => @user, :created_at => 1.hour.ago)
+     end
+     
+     describe "status feed" do
+       it "should have a feed" do
+         @user.should respond_to(:feed)
+       end
+       it "should include the users microposts" do
+         @user.feed.include?(@mp1).should be_true
+         @user.feed.include?(@mp2).should be_true
+       end
+       it "should not include a different user's microposts" do
+         mp3 = Factory(:micropost,
+                        :user => Factory(:user,:email => Factory.next(:email)))
+        @user.feed.include?(mp3).should be_false
+       end
+     end
+     
+   end    
+       
 end

@@ -41,6 +41,14 @@ describe UsersController do
       get :show, :id => @user
       response.should have_selector("h1>img", :class => 'gravatar') 
     end
+    
+    it "should display the users microposts" do
+      mp1 = Factory(:micropost, :user => @user)
+      get :show, :id => @user
+      response.should have_selector("span" , :content => mp1.content)
+      
+    end
+    
   end
   describe "POST 'new'" do
     describe "failure" do
@@ -241,6 +249,7 @@ describe UsersController do
         response.should redirect_to(users_path)
       end
     end
+    
     
   end
 end

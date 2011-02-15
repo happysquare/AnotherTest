@@ -41,7 +41,8 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     @name = @user.name
     @title = "users | " + @name
-    
+    @microposts = @user.microposts.paginate(:page => params[:page], :per_page => Micropost.per_page)
+    #@microposts = Micropost.paginate(:page => params[:page])
   end
   
   def edit
@@ -60,9 +61,7 @@ class UsersController < ApplicationController
   end
   
   private
-    def authenticate
-      deny_access unless signed_in?
-    end
+    
     
     
     

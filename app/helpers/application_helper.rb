@@ -17,4 +17,6 @@ module ApplicationHelper
     image_tag( src, :alt => alt, :class => cls)
     
   end
+  
+  
 end

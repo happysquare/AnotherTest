@@ -1,5 +1,11 @@
 <h1>
 <%=gravator_for(@user) %>
-<%=@name %>
+<%= @name %>
 </h1>
-
+<% unless @microposts.empty? %>
+	<%= will_paginate @microposts %>
+	<table class="microposts">
+		<%= render @microposts %>
+	</table>
+	<%= will_paginate( @microposts )%>
+<%end%>

@@ -14,6 +14,8 @@ class User < ActiveRecord::Base
   attr_accessor :password
   attr_accessible :name, :email, :password, :password_confirmation
   
+  has_many :microposts, :dependent => :destroy
+  
   email_regex = /\A([\w\.\-\+]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
   
   validates :name, :presence => true, 
@@ -28,6 +30,10 @@ class User < ActiveRecord::Base
             :length => {:within => 5..20}
   
   before_save :encrypt_password
+  
+  def feed
+    Micropost.where("user_id = ?", id)
+  end
   
   #class/static method to authenticate any user.
   def self.authenticate(email,sp)
