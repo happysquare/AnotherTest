@@ -15,7 +15,10 @@ class User < ActiveRecord::Base
   attr_accessible :name, :email, :password, :password_confirmation
   
   has_many :microposts, :dependent => :destroy
-  
+  has_many :relationships, :foreign_key => "follower_id", :dependent => :destroy
+  has_many :reverse_relationships, :foreign_key => "followed_id", :class_name => "Relationship",  :dependent => :destroy
+  has_many :following, :through => :relationships, :source => :followed
+  has_many :followers, :through => :reverse_relationships
   email_regex = /\A([\w\.\-\+]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
   
   validates :name, :presence => true, 
@@ -32,7 +35,7 @@ class User < ActiveRecord::Base
   before_save :encrypt_password
   
   def feed
-    Micropost.where("user_id = ?", id)
+    Micropost.from_users_followed_by id
   end
   
   #class/static method to authenticate any user.
@@ -73,6 +76,18 @@ class User < ActiveRecord::Base
   end
   def secure_hash(string)
      Digest::SHA2.hexdigest(string)
+  end
+  
+  def follow!(followed)
+    relationships.create!(:followed_id => followed.id)
+  end
+  
+  def unfollow!(user)
+    relationships.find_by_followed_id(user).destroy
+  end
+  
+  def following?(user)
+    relationships.find_by_followed_id(user)
   end
   
 end

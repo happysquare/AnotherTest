@@ -61,4 +61,26 @@ describe Micropost do
        @user.microposts.create({:content => "a" * 141}).should_not be_valid
     end
   end
+  describe "from users followed by" do
+    before(:each) do
+      @followed = Factory(:user, :email => Factory.next(:email))
+      @not_followed = Factory(:user, :email => Factory.next(:email))
+      @user_post = @user.microposts.create!(:content => "valid")
+      @post = @followed.microposts.create!(:content => "valid")
+      @other_post = @not_followed.microposts.create!(:content => "invalid")
+      @user.follow!(@followed)
+    end
+    it "should have a from_users_followed_by method" do
+      Micropost.should respond_to(:from_users_followed_by)
+    end
+    it "should include the following users' microposts" do
+      Micropost.from_users_followed_by(@user).should include(@post)
+    end
+    it "should not include an unfollowed users microposts" do
+      Micropost.from_users_followed_by(@user).should_not include(@other_post)
+    end
+    it "should include the users own posts" do
+      Micropost.from_users_followed_by(@user).should include(@user_post)
+    end
+  end
 end

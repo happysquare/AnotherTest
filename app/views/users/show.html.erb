@@ -2,6 +2,8 @@
 <%=gravator_for(@user) %>
 <%= @name %>
 </h1>
+<%= render 'shared/stats' %>
+<%= render 'shared/follow_form' if signed_in? %>
 <% unless @microposts.empty? %>
 	<%= will_paginate @microposts %>
 	<table class="microposts">

@@ -2,8 +2,10 @@
 <h1>Sample App</h1>
 <p>This is the home page <a>some stupid link</a></p>
 <% if signed_in? %>
+	<%= render 'shared/stats' %>
 	<%= render 'shared/micropost_form' %>
 	<%= render 'shared/feed' %>
+	
 <%else%>
 <%= link_to('Sign up now!',signup_path,:class => 'signup_button round')%>
 

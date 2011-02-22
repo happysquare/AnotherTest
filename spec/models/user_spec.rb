@@ -112,41 +112,82 @@ describe User do
      @user.should be_admin
    end
  end
-   describe "associations" do
-     describe "microposts" do
-       before(:each) do
-         @user = User.create(@user_att)
-         @micropost = @user.microposts.create({:content => "test micropost"})
-       end
-       it "should be respond to microposts" do
-         @user.should respond_to(:microposts)
-       end
-       
-     end
-   end
-   
-   describe "micropost associations" do
+ describe "associations" do
+   describe "microposts" do
      before(:each) do
        @user = User.create(@user_att)
-       @mp1 = Factory(:micropost, :user => @user, :created_at => 1.day.ago)
-       @mp2 = Factory(:micropost, :user => @user, :created_at => 1.hour.ago)
+       @micropost = @user.microposts.create({:content => "test micropost"})
      end
-     
-     describe "status feed" do
-       it "should have a feed" do
-         @user.should respond_to(:feed)
-       end
-       it "should include the users microposts" do
-         @user.feed.include?(@mp1).should be_true
-         @user.feed.include?(@mp2).should be_true
-       end
-       it "should not include a different user's microposts" do
-         mp3 = Factory(:micropost,
-                        :user => Factory(:user,:email => Factory.next(:email)))
-        @user.feed.include?(mp3).should be_false
-       end
+     it "should be respond to microposts" do
+       @user.should respond_to(:microposts)
      end
-     
-   end    
+   end
+ end
+
+  describe "micropost associations" do
+   before(:each) do
+     @user = User.create(@user_att)
+     @mp1 = Factory(:micropost, :user => @user, :created_at => 1.day.ago)
+     @mp2 = Factory(:micropost, :user => @user, :created_at => 1.hour.ago)
+   end
+
+   describe "status feed" do
+     it "should have a feed" do
+       @user.should respond_to(:feed)
+     end
+     it "should include the users microposts" do
+       @user.feed.include?(@mp1).should be_true
+       @user.feed.include?(@mp2).should be_true
+     end
+     it "should not include a different user's microposts" do
+       mp3 = Factory(:micropost,
+                      :user => Factory(:user,:email => Factory.next(:email)))
+      @user.feed.include?(mp3).should be_false
+     end
+     it "should include microposts of followed users" do
+       followed = Factory(:user, :email => Factory.next(:email))
+       post = followed.microposts.create!(:content => "hallo")
+       @user.follow!(followed)
+       @user.feed.should include(post)
+     end
+   end
+  end
+  describe "relationships" do
+     before(:each) do
+       @user = User.create(@user_att)
+       @followed = Factory(:user)
+     end
+     it "should have a relationships method" do
        
+       @user.should respond_to(:relationships)
+     end
+     it "should have the following method" do
+       @user.should respond_to(:following)
+     end
+     
+     it "should have a following? method" do
+       @user.should respond_to(:following?)
+     end
+     it "should have a follow! method" do
+        @user.should respond_to(:follow!)
+      end
+      it "should have an unfollow! method" do
+          @user.should respond_to(:unfollow!)
+        end
+     it "should follow another user" do
+       @user.follow!(@followed)
+       @user.should be_following(@followed)
+     end
+     it "should include the followed user in the following array" do
+       @user.follow!(@followed)
+       @user.following.should include(@followed)
+     end
+     it "should remove the followed user in the following array" do
+        @user.follow!(@followed)
+        @user.unfollow!(@followed)
+        @user.following.should_not include(@followed)
+      end
+     
+  end
+ 
 end
